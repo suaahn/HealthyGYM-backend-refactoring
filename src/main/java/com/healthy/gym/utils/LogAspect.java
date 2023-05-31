@@ -37,7 +37,7 @@ public class LogAspect {
             return result;
         } finally {
             logger.info(request.getMethod() + " " + request.getRequestURI());
-            logger.info("Response " + new JSONObject(result).toString());
+            //logger.info("Response " + new JSONObject(result).toString());
         }
     }
 

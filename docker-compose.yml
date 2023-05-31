@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  db-mysql:
+    container_name: db-mysql
+    image: mysql:8.0.29
+    environment:
+      MYSQL_DATABASE: healthygym
+      MYSQL_USER: user
+      MYSQL_PASSWORD: '0000'
+      MYSQL_ROOT_PASSWORD: '0000'
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - springboot-mysql-net
+  backend:
+    container_name: backend
+    build: .
+    restart: always
+    image: suaahn/gym-backend:0.1
+    environment:
+      MYSQL_HOST: db-mysql
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-mysql:3306/healthygym?useSSL=false&allowPublicKeyRetrieval=true&serverTimeZone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: '0000'
+    ports:
+      - 8080:8080
+    depends_on:
+      - db-mysql
+    networks:
+      - springboot-mysql-net
+
+networks:
+  springboot-mysql-net:
+    driver: bridge
