@@ -6,22 +6,20 @@ public class BbsDto implements Serializable {
 
     private int bbsseq;
     private int memberseq;
+    private int bbstag;
     private String title;
     private String content;
-    private int bbstag;
     private String wdate;
     private String rdate;
     private int likecount;
     private int readcount;
-    private int ref;
-    private int del;
-
-    private String thumnail;
     private int report;
+    private int del;
+    private String thumnail;
 
     public BbsDto() {}
 
-    public BbsDto(int bbsseq, int memberseq, String title, String content, int bbstag, String wdate, String rdate, int likecount, int readcount, int ref, int del, String thumnail, int report) {
+    public BbsDto(int bbsseq, int memberseq, String title, String content, int bbstag, String wdate, String rdate, int likecount, int readcount, int del, String thumnail, int report) {
         this.bbsseq = bbsseq;
         this.memberseq = memberseq;
         this.title = title;
@@ -31,7 +29,6 @@ public class BbsDto implements Serializable {
         this.rdate = rdate;
         this.likecount = likecount;
         this.readcount = readcount;
-        this.ref = ref;
         this.del = del;
         this.thumnail = thumnail;
         this.report = report;
@@ -109,14 +106,6 @@ public class BbsDto implements Serializable {
         this.readcount = readcount;
     }
 
-    public int getRef() {
-        return ref;
-    }
-
-    public void setRef(int ref) {
-        this.ref = ref;
-    }
-
     public int getDel() {
         return del;
     }
@@ -146,17 +135,16 @@ public class BbsDto implements Serializable {
         return "BbsDto{" +
                 "bbsseq=" + bbsseq +
                 ", memberseq=" + memberseq +
+                ", bbstag=" + bbstag +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", bbstag=" + bbstag +
                 ", wdate='" + wdate + '\'' +
                 ", rdate='" + rdate + '\'' +
                 ", likecount=" + likecount +
                 ", readcount=" + readcount +
-                ", ref=" + ref +
+                ", report=" + report +
                 ", del=" + del +
                 ", thumnail='" + thumnail + '\'' +
-                ", report=" + report +
                 '}';
     }
 }
