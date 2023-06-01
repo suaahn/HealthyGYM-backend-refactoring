@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.HomeDao">
+
+    <select id="getHomeBestPosts" resultType="com.healthy.gym.dto.BbsDto">
+        select bbsseq, bbstag, title, likecount, readcount
+        from (select row_number()over(order by readcount desc) rnum,
+            bbsseq, bbstag, title, likecount, readcount
+            from bbs
+            where bbstag in (2, 3, 4, 11)
+                and wdate>=DATE_SUB(NOW(), INTERVAL 30 DAY)
+                and likecount>=1
+                and del=0
+            order by readcount desc) a
+        where rnum between 1 and 10
+    </select>
+
+    <select id="getHomePosts" parameterType="Integer" resultType="com.healthy.gym.dto.BbsDto">
+        select bbsseq, title, readcount, bbstag
+        from (select row_number()over(order by readcount desc) rnum,
+        bbsseq, title, readcount, bbstag
+        from bbs
+        where bbstag=${bbstag} and del=0
+        order by readcount desc) a
+        where rnum between 1 and 5
+    </select>
+
+</mapper>
