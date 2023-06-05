@@ -17,13 +17,13 @@ public class HomeController {
     @Autowired
     HomeService service;
 
-    @GetMapping("posts/best")
+    @GetMapping("/best")
     public List<BbsDto> getHomeBestPosts() {
 
         return service.getHomeBestPosts();
     }
 
-    @GetMapping("posts/{bbstag}")
+    @GetMapping("/{bbstag}")
     public List<BbsDto> getHomePosts(@PathVariable int bbstag) {
 
         return service.getHomePosts(bbstag);
