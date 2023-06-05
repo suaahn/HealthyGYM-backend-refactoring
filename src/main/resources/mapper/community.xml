@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.CommunityDao">
+
+    <select id="getPostList" parameterType="com.healthy.gym.dto.BbsParam" resultType="map">
+        select b.bbsseq, title, content, wdate, rdate, ref, likecount, readcount, thumbnail,
+            nickname, profile, ifnull(cnt, 0) cmtcount
+        from member a, (select row_number()over(order by ${order} desc) rnum,
+            memberseq, bbsseq, title, content, wdate, rdate, ref, likecount, readcount, thumbnail
+            from bbs
+            where bbstag=#{bbstag} and del=0
+            order by ${order} desc) b
+            LEFT OUTER JOIN (select count(*) cnt, bbsseq
+            from bbs_comment
+            group by bbsseq) c
+        on b.bbsseq=c.bbsseq
+        where a.memberseq=b.memberseq
+            and rnum between ${start} and ${end}
+    </select>
+
+    <select id="getPost" parameterType="Integer" resultType="map">
+        select bbsseq, title, content, wdate, likecount, readcount, del, bbstag,
+        b.memberseq, b.nickname, profile
+        from bbs a, member b
+        where a.memberseq=b.memberseq
+        and bbsseq=#{bbsseq}
+    </select>
+
+    <select id="checkLiking" parameterType="com.healthy.gym.dto.BbsDto" resultType="Integer">
+        select EXISTS(select *
+        from like_bbs
+        where memberseq=#{memberseq} and bbsseq=#{bbsseq}) as liking
+    </select>
+
+    <select id="getPostComment" parameterType="com.healthy.gym.dto.BbsCommentParam" resultType="map">
+        select bbsseq, commentseq, cmtcontent, regdate, step, ref, cmtdel,
+        a.memberseq, a.nickname, a.profile
+        from member a, (select row_number()over(order by ref desc, step) rnum,
+        memberseq, bbsseq, commentseq, cmtcontent, regdate, step, ref, cmtdel
+        from bbs_comment
+        where bbsseq=#{bbsseq}
+        order by ref desc, step) b
+        where a.memberseq=b.memberseq
+        and rnum between ${start} and ${end}
+    </select>
+
+    <insert id="writePost" parameterType="com.healthy.gym.dto.BbsDto">
+        insert into bbs(memberseq, title, content, bbstag, thumbnail)
+        values(#{memberseq}, #{title}, #{content}, #{bbstag}, #{thumbnail})
+    </insert>
+
+    <insert id="writePostComment" parameterType="com.healthy.gym.dto.BbsCommentDto">
+        insert into bbs_comment(memberseq, bbsseq, cmtcontent, cmtdel, ref, step)
+        values(#{memberseq}, #{bbsseq}, #{cmtcontent}, 0,
+        (select ifnull(max(ref), 0)+1 from bbs_comment a), 0)
+    </insert>
+
+    <insert id="writePostReply" parameterType="com.healthy.gym.dto.BbsCommentDto">
+        insert into bbs_comment(memberseq, bbsseq, cmtcontent, cmtdel, ref, step)
+        values(#{memberseq}, #{bbsseq}, #{cmtcontent}, 0,
+        (select ref from bbs_comment a where commentseq=#{commentseq}),
+        (select step from bbs_comment b where commentseq=#{commentseq})+1)
+    </insert>
+
+    <insert id="likePost" parameterType="com.healthy.gym.dto.BbsDto">
+        insert into like_bbs
+        values(#{memberseq}, #{bbsseq})
+    </insert>
+
+    <update id="addLikecount" parameterType="Integer">
+        update bbs
+        set likecount=likecount+1
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <update id="subtractLikecount" parameterType="Integer">
+        update bbs
+        set likecount=likecount-1
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <delete id="unlikePost" parameterType="com.healthy.gym.dto.BbsDto">
+        delete from like_bbs
+        where memberseq=#{memberseq}
+        and bbsseq=#{bbsseq}
+    </delete>
+
+    <update id="deletePost" parameterType="Integer">
+        update bbs
+        set del=1
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <update id="reportPost" parameterType="Integer">
+        update bbs
+        set report=1
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <update id="updatePost" parameterType="com.healthy.gym.dto.BbsDto">
+        update bbs
+        set title=#{title}, content=#{content}, thumbnail=#{thumbnail}, bbstag=#{bbstag}, rdate=now()
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <update id="updatePostComment" parameterType="com.healthy.gym.dto.BbsCommentDto">
+        update bbs_comment
+        set cmtcontent=#{cmtcontent}
+        where commentseq=#{commentseq}
+    </update>
+
+    <update id="deletePostComment" parameterType="Integer">
+        update bbs_comment
+        set cmtdel=1
+        where commentseq=#{commentseq}
+    </update>
+
+    <update id="addReadcount" parameterType="Integer">
+        update bbs
+        set readcount=readcount+1
+        where bbsseq=#{bbsseq}
+    </update>
+</mapper>
