@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.SearchDao">
+    <!-- 검색결과 -->
+    <select id="findPostByKeyword" parameterType="com.healthy.gym.dto.BbsParam" resultType="map">
+        select b.bbsseq, title, content, wdate, rdate, likecount, readcount, thumbnail, bbstag,
+            profile, nickname, ifnull(cnt, 0) cmtcount
+        from member a,
+            (select row_number() over(order by ${order} desc) rnum,
+            memberseq, bbsseq, bbstag, title, content, wdate, rdate, likecount, readcount, thumbnail
+            from bbs
+            where 1=1 and del=0
+            <if test="search != null and search != ''">
+                and (title like concat('%',#{search},'%') or content like concat('%',#{search},'%'))
+            </if>
+            <if test="bbstag != null">
+                <if test="bbstag == 0">
+                    and 1=1 <!-- 모든 게시글 -->
+                </if>
+                <if test="bbstag != 0">
+                    and bbstag = #{bbstag} <!-- bbstag에 맞는 게시글 -->
+                </if>
+            </if>
+            order by ${order} desc) b
+        LEFT OUTER JOIN (select count(*) cnt, bbsseq
+            from bbs_comment
+            group by bbsseq) c
+        on b.bbsseq=c.bbsseq
+        where a.memberseq=b.memberseq
+        <if test="bbstag != null and bbstag != 0">
+            and bbstag=#{bbstag}
+        </if>
+            and rnum between ${start} and ${end}
+    </select>
+</mapper>
