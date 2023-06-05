@@ -5,6 +5,7 @@ import com.healthy.gym.dto.BbsCommentParam;
 import com.healthy.gym.dto.BbsDto;
 import com.healthy.gym.dto.BbsParam;
 import com.healthy.gym.service.CommunityService;
+import com.healthy.gym.utils.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,17 +22,23 @@ public class CommunityController {
     @Autowired
     CommunityService service;
 
+    @GetMapping("/best")
+    public List<Map<String, Object>> getBestPostList(BbsParam param) {
+
+        BbsParam params = (BbsParam) Utility.setPageParam(param);
+
+        return service.getBestPostList(params);
+    }
+
     @GetMapping("/{bbstag}")
     public List<Map<String, Object>> getPostList(BbsParam param) {
 
-        int page = param.getPage();
-        param.setStart(1 + (page * 10));
-        param.setEnd((page + 1) * 10);
+        BbsParam params = (BbsParam) Utility.setPageParam(param);
 
-        return service.getPostList(param);
+        return service.getPostList(params);
     }
 
-    @GetMapping("/{bbstag}/{bbsseq}")
+    @GetMapping("/{bbstag}/posts/{bbsseq}")
     public List<Map<String, Object>> getPost(BbsDto dto, boolean visit) {
 
         // 게시글 상세 정보
@@ -50,14 +57,12 @@ public class CommunityController {
         return detail;
     }
 
-    @GetMapping("/{bbstag}/{bbsseq}/comments")
+    @GetMapping("/{bbstag}/posts/{bbsseq}/comments")
     public List<Map<String, Object>> getPostComment(BbsCommentParam param) {
 
-        int page = param.getPage();
-        param.setStart(1 + (page * 10));
-        param.setEnd((page + 1) * 10);
+        BbsCommentParam params = (BbsCommentParam)Utility.setPageParam(param);
 
-        return service.getPostComment(param);
+        return service.getPostComment(params);
     }
 
     @PostMapping("/write")
@@ -143,7 +148,6 @@ public class CommunityController {
 
     @PostMapping("/update-comment")
     public String updatePostComment(BbsCommentDto dto) {
-        System.out.println(dto.toString());
 
         if(service.updatePostComment(dto)) {
             return "OK";

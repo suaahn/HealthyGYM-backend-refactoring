@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.HealthMateDao">
+
+    <select id="getHealthMateList" parameterType="com.healthy.gym.dto.HealthMateParam" resultType="map">
+        select bbsseq, c.memberseq, title, readcount, wdate, addressfirst, addresssecond,
+            mdate, mtime, back, chest, shoulder, arm, abs, leg, run, nickname, profile
+        from (select row_number()over(order by wdate desc) rnum, a.bbsseq, memberseq, title, readcount, wdate,
+            addressfirst, addresssecond, mdate, mtime, back, chest, shoulder, arm, abs, leg, run
+            from bbs a, mate b
+            where a.bbsseq=b.bbsseq and bbstag=5 and del=0
+                <if test="addressfirst != 0">and addressfirst=#{addressfirst} and addresssecond=#{addresssecond}</if>
+                <if test="mdate != '' and mdate != null">and mdate=#{mdate}</if>
+                <if test="mtime != '' and mtime != null">and mtime like #{mtime}</if>
+                <foreach collection="bodypart" item="item">
+                    and ${item}=1
+                </foreach>
+            order by wdate desc) c, member d
+        where c.memberseq=d.memberseq
+            and rnum between ${start} and ${end}
+    </select>
+
+    <select id="getHealthMatePost" parameterType="Integer" resultType="map">
+        select a.memberseq, title, content, readcount, wdate, addressfirst, addresssecond, center,
+            mdate, mtime, back, chest, shoulder, arm, abs, leg, run, nickname, profile
+        from bbs a, mate b, member c
+        where a.bbsseq=b.bbsseq
+            and a.memberseq=c.memberseq
+            and a.bbsseq=#{bbsseq}
+    </select>
+
+    <insert id="writeHealthMate" parameterType="com.healthy.gym.dto.HealthMateDto">
+        insert into mate
+        values(#{bbsseq}, #{addressfirst}, #{addresssecond}, #{center}, #{mdate}, #{mtime},
+            #{back}, #{chest}, #{shoulder}, #{arm}, #{abs}, #{leg}, #{run})
+    </insert>
+
+    <insert id="writePost" parameterType="com.healthy.gym.dto.BbsDto"
+            useGeneratedKeys="true" keyProperty="bbsseq" keyColumn="bbsseq">
+        insert into bbs(memberseq, title, content, bbstag)
+        values(#{memberseq}, #{title}, #{content}, #{bbstag})
+    </insert>
+
+    <update id="updateHealthMate" parameterType="com.healthy.gym.dto.HealthMateDto">
+        update mate
+        set addressfirst=#{addressfirst}, addresssecond=#{addresssecond}, center=#{center},
+            mdate=#{mdate}, mtime=#{mtime}, back=#{back}, chest=#{chest}, shoulder=#{shoulder},
+            arm=#{arm}, abs=#{abs}, leg=#{leg}, run=#{run}
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <update id="updatePost" parameterType="com.healthy.gym.dto.BbsDto"
+            useGeneratedKeys="true" keyProperty="bbsseq" keyColumn="bbsseq">
+        update bbs
+        set title=#{title}, content=#{content}
+        where bbsseq=#{bbsseq}
+    </update>
+
+    <update id="addReadcount" parameterType="Integer">
+        update bbs
+        set readcount=readcount+1
+        where bbsseq=#{bbsseq}
+    </update>
+
+</mapper>

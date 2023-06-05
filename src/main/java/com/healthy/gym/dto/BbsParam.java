@@ -1,22 +1,24 @@
 package com.healthy.gym.dto;
 
-public class BbsParam {
+public class BbsParam extends PageParam {
 
     private int bbstag;
     private String order;
-    private int page;
-    private int start;
-    private int end;
+    private String search;
 
     public BbsParam() {}
 
     public BbsParam(int bbstag, String order, int page, int start, int end) {
-        super();
+        super(page, start, end);
         this.bbstag = bbstag;
         this.order = order;
-        this.page = page;
-        this.start = start;
-        this.end = end;
+    }
+
+    public BbsParam(int bbstag, String order, String search, int page, int start, int end) {
+        super(page, start, end);
+        this.bbstag = bbstag;
+        this.order = order;
+        this.search = search;
     }
 
     public int getBbstag() {
@@ -35,28 +37,12 @@ public class BbsParam {
         this.order = order;
     }
 
-    public int getPage() {
-        return page;
+    public String getSearch() {
+        return search;
     }
 
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public int getStart() {
-        return start;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public int getEnd() {
-        return end;
-    }
-
-    public void setEnd(int end) {
-        this.end = end;
+    public void setSearch(String search) {
+        this.search = search;
     }
 
     @Override
@@ -64,9 +50,7 @@ public class BbsParam {
         return "BbsParam{" +
                 "bbstag=" + bbstag +
                 ", order='" + order + '\'' +
-                ", page=" + page +
-                ", start=" + start +
-                ", end=" + end +
-                '}';
+                ", search='" + search + '\'' +
+                "} " + super.toString();
     }
 }

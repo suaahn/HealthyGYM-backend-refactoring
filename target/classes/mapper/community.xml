@@ -4,15 +4,37 @@
 
 <mapper namespace="com.healthy.gym.dao.CommunityDao">
 
+    <!-- 토픽베스트 게시판 (likecount >= 1 임시 설정) -->
+    <select id="getBestPostList" parameterType="com.healthy.gym.dto.BbsParam" resultType="map">
+        select b.bbsseq, title, content, wdate, rdate, likecount, readcount, thumbnail, bbstag,
+            profile, nickname, ifnull(cnt, 0) cmtcount
+        from member a,
+            (select row_number()over(order by ${order} desc) rnum,
+            memberseq, bbsseq, bbstag, title, content, wdate, rdate, likecount, readcount, thumbnail
+            from bbs
+            where bbstag in (2, 3, 4, 5)
+                and wdate>=DATE_SUB(NOW(), INTERVAL 10 DAY)
+                and likecount>=1
+                and del=0
+            order by ${order} desc) b
+        LEFT OUTER JOIN (select count(*) cnt, bbsseq
+            from bbs_comment
+            group by bbsseq) c
+        on b.bbsseq=c.bbsseq
+        where a.memberseq=b.memberseq
+            and rnum between ${start} and ${end}
+    </select>
+
     <select id="getPostList" parameterType="com.healthy.gym.dto.BbsParam" resultType="map">
         select b.bbsseq, title, content, wdate, rdate, ref, likecount, readcount, thumbnail,
             nickname, profile, ifnull(cnt, 0) cmtcount
-        from member a, (select row_number()over(order by ${order} desc) rnum,
+        from member a,
+            (select row_number()over(order by ${order} desc) rnum,
             memberseq, bbsseq, title, content, wdate, rdate, ref, likecount, readcount, thumbnail
             from bbs
             where bbstag=#{bbstag} and del=0
             order by ${order} desc) b
-            LEFT OUTER JOIN (select count(*) cnt, bbsseq
+        LEFT OUTER JOIN (select count(*) cnt, bbsseq
             from bbs_comment
             group by bbsseq) c
         on b.bbsseq=c.bbsseq

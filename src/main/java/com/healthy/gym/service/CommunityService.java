@@ -19,6 +19,10 @@ public class CommunityService {
     @Autowired
     CommunityDao dao;
 
+    public List<Map<String, Object>> getBestPostList(BbsParam param) {
+        return dao.getBestPostList(param);
+    }
+
     public List<Map<String, Object>> getPostList(BbsParam param) {
         return dao.getPostList(param);
     }

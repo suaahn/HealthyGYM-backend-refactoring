@@ -14,6 +14,7 @@ import java.util.Map;
 @Repository
 public interface CommunityDao {
 
+    List<Map<String, Object>> getBestPostList(BbsParam param);
     List<Map<String, Object>> getPostList(BbsParam param);
     List<Map<String, Object>> getPost(int bbsseq);
     int checkLiking(BbsDto dto);
