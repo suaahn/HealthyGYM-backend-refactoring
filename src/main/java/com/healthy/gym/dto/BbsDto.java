@@ -15,11 +15,11 @@ public class BbsDto implements Serializable {
     private int readcount;
     private int report;
     private int del;
-    private String thumnail;
+    private String thumbnail;
 
     public BbsDto() {}
 
-    public BbsDto(int bbsseq, int memberseq, String title, String content, int bbstag, String wdate, String rdate, int likecount, int readcount, int del, String thumnail, int report) {
+    public BbsDto(int bbsseq, int memberseq, String title, String content, int bbstag, String wdate, String rdate, int likecount, int readcount, int del, String thumbnail, int report) {
         this.bbsseq = bbsseq;
         this.memberseq = memberseq;
         this.title = title;
@@ -30,7 +30,7 @@ public class BbsDto implements Serializable {
         this.likecount = likecount;
         this.readcount = readcount;
         this.del = del;
-        this.thumnail = thumnail;
+        this.thumbnail = thumbnail;
         this.report = report;
     }
 
@@ -114,12 +114,12 @@ public class BbsDto implements Serializable {
         this.del = del;
     }
 
-    public String getThumnail() {
-        return thumnail;
+    public String getThumbnail() {
+        return thumbnail;
     }
 
-    public void setThumnail(String thumnail) {
-        this.thumnail = thumnail;
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public int getReport() {
@@ -144,7 +144,7 @@ public class BbsDto implements Serializable {
                 ", readcount=" + readcount +
                 ", report=" + report +
                 ", del=" + del +
-                ", thumnail='" + thumnail + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
                 '}';
     }
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.MemberDao">
+
+    <select id="findBySeq" parameterType="Integer" resultType="com.healthy.gym.dto.MemberDto">
+        select *
+        from member
+        where memberseq=#{memberseq}
+    </select>
+
+    <select id="findByEmail" parameterType="String" resultType="com.healthy.gym.dto.MemberDto">
+        select *
+        from member
+        where email=#{email}
+    </select>
+
+    <select id="findSeqByEmail" parameterType="String" resultType="Integer">
+        select memberseq
+        from member
+        where email=#{email}
+    </select>
+
+    <select id="existsByEmail" parameterType="String" resultType="Integer">
+        select EXISTS(select *
+        from member
+        where email=#{email}) as e
+    </select>
+
+    <select id="existsByNickname" parameterType="String" resultType="Integer">
+        select EXISTS(select *
+        from member
+        where nickname=#{nickname}) as e
+    </select>
+
+    <select id="findProviderByEmail" parameterType="String" resultType="String">
+        select provider
+        from member
+        where email=#{email}
+    </select>
+
+    <select id="findAuthByEmail" parameterType="String" resultType="Integer">
+        select auth
+        from member
+        where email=#{email}
+    </select>
+
+    <insert id="signup" parameterType="com.healthy.gym.dto.MemberDto">
+        insert into member(email, pwd, nickname, auth, profile, authority, provider)
+        values(#{email}, #{pwd}, #{nickname}, 1, "default.png", "ROLE_USER", #{provider})
+    </insert>
+
+    <insert id="signupOAuth" parameterType="com.healthy.gym.dto.MemberDto">
+        insert into member(email, nickname, auth, profile, authority)
+        values(#{email}, #{nickname}, 1, "default.png", "ROLE_USER")
+    </insert>
+
+    <insert id="registerMemberinfo" parameterType="String">
+        insert into memberinfo(memberseq)
+        values((select memberseq from member where email=#{email}))
+    </insert>
+
+    <update id="resetPwd" parameterType="com.healthy.gym.dto.MemberDto">
+        update member
+        set pwd=#{pwd}
+        where email=#{email}
+    </update>
+
+    <update id="updateMailKey" parameterType="com.healthy.gym.dto.MemberDto">
+        update member
+        set mailkey=#{mailkey}
+        where email=#{email}
+    </update>
+
+</mapper>
