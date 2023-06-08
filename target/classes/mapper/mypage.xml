@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.MypageDao">
+
+    <!--<select id="findMemberById" parameterType="Integer"
+            resultType="com.healthy.gym.dto.MemberDto">
+        select *
+        from member
+        where memberseq = #{memberseq}
+    </select>-->
+
+    <select id="findMemberinfoBySeq" parameterType="Integer"
+            resultType="com.healthy.gym.dto.MemberinfoDto">
+        select *
+        from memberinfo
+        where memberseq = #{memberseq}
+    </select>
+
+    <update id="updateProfile" parameterType="com.healthy.gym.dto.ProfileDto">
+        UPDATE member m
+        JOIN memberinfo mi
+        ON m.memberseq = mi.memberseq
+        SET m.email = #{email}, m.nickname = #{nickname}, m.profileimg = #{profileimg}, mi.name = #{name}, mi.age = #{age}, mi.gender = #{gender}, mi.phone = #{phone}, mi.mbti = #{mbti}
+        WHERE m.memberseq = #{memberseq}
+    </update>
+
+    <update id="updatePwd" parameterType="com.healthy.gym.dto.MemberDto">
+        UPDATE member
+        SET pwd = #{pwd}
+        WHERE memberseq = #{memberseq}
+    </update>
+
+    <update id="withdrawMember" parameterType="com.healthy.gym.dto.MemberDto">
+        UPDATE member
+        SET auth = #{auth}, email = #{email}
+        WHERE memberseq = #{memberseq}
+    </update>
+
+    <select id="getMyPostList" parameterType="com.healthy.gym.dto.BbsDto" resultType="map">
+        SELECT b.bbsseq, bbstag, title, content, wdate, rdate, likecount, readcount, thumbnail,
+            COALESCE(cnt, 0) AS cmtcount
+        FROM bbs b
+        LEFT JOIN (
+            SELECT bbsseq, COUNT(*) AS cnt
+            FROM bbs_comment
+            GROUP BY bbsseq
+            ) c ON b.bbsseq = c.bbsseq
+        WHERE b.bbstag = #{bbstag} AND b.del = 0 AND b.memberseq = ${memberseq}
+        ORDER BY wdate DESC;
+    </select>
+
+    <select id="getMyAllPostList" parameterType="com.healthy.gym.dto.BbsDto" resultType="map">
+        SELECT b.bbsseq, bbstag, title, content, wdate, rdate, likecount, readcount, thumbnail,
+            COALESCE(cnt, 0) AS cmtcount
+        FROM bbs b
+        LEFT JOIN (
+            SELECT bbsseq, COUNT(*) AS cnt
+            FROM bbs_comment
+            GROUP BY bbsseq
+            ) c ON b.bbsseq = c.bbsseq
+        WHERE b.del = 0 AND b.memberseq = ${memberseq}
+        ORDER BY wdate DESC;
+    </select>
+
+    <select id="getMyCmtList" parameterType="com.healthy.gym.dto.BbsDto" resultType="map">
+        select b.bbsseq, title, content, wdate, likecount, readcount, bbstag, coalesce(cnt, 0) as cmtcount
+        from bbs_comment b
+        join bbs a on a.bbsseq=b.bbsseq
+        left join ( select bbsseq, count(*) as cnt
+            from bbs_comment group by bbsseq ) c on a.bbsseq = c.bbsseq
+        where bbstag = #{bbstag} and del = 0 and b.memberseq = #{memberseq}
+        group by b.bbsseq;
+    </select>
+
+    <select id="getMyAllCmtList" parameterType="com.healthy.gym.dto.BbsDto" resultType="map">
+        select b.bbsseq, title, content, wdate, likecount, readcount, bbstag, coalesce(cnt, 0) as cmtcount
+        from bbs_comment b
+        join bbs a on a.bbsseq=b.bbsseq
+        left join ( select bbsseq, count(*) as cnt
+            from bbs_comment group by bbsseq ) c on a.bbsseq = c.bbsseq
+        where b.memberseq = #{memberseq} and del = 0
+        group by b.bbsseq;
+    </select>
+
+    <select id="getMyLikedPostList" parameterType="com.healthy.gym.dto.BbsDto" resultType="map">
+        select b.bbsseq, title, content, wdate, likecount, readcount, bbstag, coalesce(cnt, 0) as cmtcount
+        from like_bbs b
+        join bbs a on a.bbsseq=b.bbsseq
+        left join ( select bbsseq, count(*) as cnt
+            from bbs_comment group by bbsseq ) c on a.bbsseq = c.bbsseq
+        where bbstag = #{bbstag} and b.memberseq = #{memberseq} and del = 0
+        group by b.bbsseq;
+    </select>
+
+    <select id="getMyAllLikedPostList" parameterType="com.healthy.gym.dto.BbsDto" resultType="map">
+        select b.bbsseq, title, content, wdate, likecount, readcount, bbstag, coalesce(cnt, 0) as cmtcount
+        from like_bbs b
+        join bbs a on a.bbsseq=b.bbsseq
+        left join ( select bbsseq, count(*) as cnt
+            from bbs_comment group by bbsseq ) c on a.bbsseq = c.bbsseq
+        where b.memberseq = #{memberseq} and del = 0
+        group by b.bbsseq;
+    </select>
+
+</mapper>

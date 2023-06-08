@@ -47,12 +47,12 @@
     </select>
 
     <insert id="signup" parameterType="com.healthy.gym.dto.MemberDto">
-        insert into member(email, pwd, nickname, auth, profile, authority, provider)
+        insert into member(email, pwd, nickname, auth, profileimg, authority, provider)
         values(#{email}, #{pwd}, #{nickname}, 1, "default.png", "ROLE_USER", #{provider})
     </insert>
 
     <insert id="signupOAuth" parameterType="com.healthy.gym.dto.MemberDto">
-        insert into member(email, nickname, auth, profile, authority)
+        insert into member(email, nickname, auth, profileimg, authority)
         values(#{email}, #{nickname}, 1, "default.png", "ROLE_USER")
     </insert>
 
