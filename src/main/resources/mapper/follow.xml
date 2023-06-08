@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.FollowDao">
+
+    <!-- 내가 팔로우하는 멤버들 -->
+    <select id="getFollowingTargets" parameterType="Integer" resultType="map">
+        SELECT m.memberseq as followeeseq, m.nickname, m.profileimg, m2.mbti, m2.gender
+        FROM follow f
+        JOIN member m ON m.memberseq = f.foltarget
+        JOIN memberinfo m2 on m.memberseq = m2.memberseq
+        WHERE f.memberseq = #{memberseq}
+    </select>
+
+    <!-- 나를 팔로우하는 멤버들 -->
+    <select id="getFollowers" parameterType="Integer" resultType="map">
+        SELECT f.memberseq as followerseq, m.nickname, m.profileimg, m2.mbti, m2.gender
+        FROM follow f
+        JOIN member m ON m.memberseq = f.memberseq
+        JOIN memberinfo m2 on m.memberseq = m2.memberseq
+        WHERE f.foltarget = #{memberseq};
+    </select>
+
+    <insert id="requestFollow" parameterType="com.healthy.gym.dto.FollowDto">
+        insert into follow (memberseq, foltarget)
+        values(#{memberseq}, #{foltarget})
+    </insert>
+
+    <delete id="requestUnfollow" parameterType="com.healthy.gym.dto.FollowDto">
+        DELETE FROM follow
+        WHERE memberseq = #{memberseq} and foltarget = #{foltarget}
+    </delete>
+
+    <select id="checkFollow" parameterType="com.healthy.gym.dto.FollowDto" resultType="Integer">
+        SELECT COUNT(*)
+        FROM follow
+        WHERE memberseq = #{memberseq} AND foltarget = #{foltarget}
+    </select>
+
+</mapper>

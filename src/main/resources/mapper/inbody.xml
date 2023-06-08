@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.InbodyDao">
+
+    <select id="getInbodyList" parameterType="Integer"
+            resultType="com.healthy.gym.dto.InbodyDto">
+        select *
+        from inbody
+        where memberseq = #{memberseq}
+            and issaved = 1
+    </select>
+
+    <insert id="insertInbody" parameterType="com.healthy.gym.dto.InbodyDto">
+        insert into inbody(memberseq, weight, musclemass, bodyfatmass, imgpath)
+        values (#{memberseq}, #{weight}, #{musclemass}, #{bodyfatmass}, #{imgpath})
+    </insert>
+
+    <update id="saveInbody" parameterType="Integer">
+        update inbody
+        set issaved=1
+        where inbodyseq = #{inbodyseq}
+    </update>
+
+    <delete id="deleteInbody" parameterType="Integer">
+        DELETE FROM inbody
+        WHERE inbodyseq = #{inbodyseq}
+    </delete>
+
+</mapper>

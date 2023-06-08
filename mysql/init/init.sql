@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS member
    pwd       VARCHAR(500)  NOT NULL,
    auth      TINYINT      NOT NULL,
    authority VARCHAR(10) NOT NULL,
-   profile   VARCHAR(100)  NOT NULL,
+   profileimg   VARCHAR(100)  NOT NULL,
    nickname  VARCHAR(50)  NOT NULL,
    provider  VARCHAR(10) NOT NULL,
    mailkey   VARCHAR(50)
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS memberinfo
    FOREIGN KEY (memberseq) REFERENCES member (memberseq) ON DELETE CASCADE
 );
 
-CREATE TABLE follow
+CREATE TABLE IF NOT EXISTS follow
 (
     followseq INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     memberseq INT NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE follow
     FOREIGN KEY (memberseq) REFERENCES member (memberseq) ON DELETE CASCADE
 );
 
-CREATE TABLE inbody
+CREATE TABLE IF NOT EXISTS inbody
 (
     inbodyseq   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     memberseq   INT NOT NULL,
@@ -41,23 +41,11 @@ CREATE TABLE inbody
     musclemass  DECIMAL(3, 1),
     bodyfatmass DECIMAL(3, 1),
     imgpath     VARCHAR(100),
-    newimgpath  VARCHAR(100),
+    issaved     TINYINT DEFAULT 0,
     FOREIGN KEY (memberseq) REFERENCES member (memberseq) ON DELETE CASCADE
 );
 
-CREATE TABLE bodycom
-(
-    bodycomseq   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    memberseq   INT NOT NULL,
-    uploaddate  DATETIME DEFAULT CURRENT_TIMESTAMP,
-    weight      DECIMAL(4, 1),
-    musclemass  DECIMAL(3, 1),
-    bodyfatmass DECIMAL(3, 1),
-    imgpath     VARCHAR(100),
-    FOREIGN KEY (memberseq) REFERENCES member (memberseq) ON DELETE CASCADE
-);
-
-CREATE TABLE refreshtoken
+CREATE TABLE IF NOT EXISTS refreshtoken
 (
 	email VARCHAR(100) NOT NULL,
     rvalue VARCHAR(500) NOT NULL
@@ -80,7 +68,7 @@ CREATE TABLE IF NOT EXISTS bbs
    FOREIGN KEY (memberseq) REFERENCES member (memberseq) ON DELETE CASCADE
 );
 
-CREATE TABLE like_bbs
+CREATE TABLE IF NOT EXISTS like_bbs
 (
     memberseq INT NOT NULL,
     bbsseq    INT NOT NULL,
@@ -88,7 +76,7 @@ CREATE TABLE like_bbs
     FOREIGN KEY (bbsseq) REFERENCES bbs (bbsseq) ON DELETE CASCADE
 );
 
-CREATE TABLE bbs_comment
+CREATE TABLE IF NOT EXISTS bbs_comment
 (
     commentseq INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     memberseq  INT          NOT NULL,
@@ -102,7 +90,7 @@ CREATE TABLE bbs_comment
     FOREIGN KEY (bbsseq) REFERENCES bbs (bbsseq) ON DELETE CASCADE
 );
 
-CREATE TABLE mate
+CREATE TABLE IF NOT EXISTS mate
 (
     bbsseq   INT          NOT NULL,
     addressfirst  VARCHAR(10) NOT NULL,
@@ -120,7 +108,7 @@ CREATE TABLE mate
     FOREIGN KEY (bbsseq) REFERENCES bbs (bbsseq) ON DELETE CASCADE
 );
 
-CREATE TABLE message
+CREATE TABLE IF NOT EXISTS message
 (
     msgseq    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     memberseq INT NOT NULL,
@@ -131,7 +119,7 @@ CREATE TABLE message
     FOREIGN KEY (memberseq) REFERENCES member (memberseq) ON DELETE CASCADE
 );
 
-CREATE TABLE meal_ingredients
+CREATE TABLE IF NOT EXISTS meal_ingredients
 (
     foodseq     INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     bbsseq      INT         NOT NULL,
@@ -151,7 +139,7 @@ CREATE TABLE meal_ingredients
     FOREIGN KEY (bbsseq) REFERENCES bbs (bbsseq) ON DELETE CASCADE
 );
 
-CREATE TABLE mealrecommend
+CREATE TABLE IF NOT EXISTS mealrecommend
 (
     foodseq     INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     msgseq      INT         NOT NULL,

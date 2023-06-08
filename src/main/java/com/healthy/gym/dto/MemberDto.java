@@ -5,7 +5,7 @@ public class MemberDto {
     private int memberseq;
     private String email;
     private String pwd;
-    private String profile;
+    private String profileimg;
     private String nickname;
     private int auth;
     private String authority;
@@ -27,11 +27,11 @@ public class MemberDto {
         this.provider = provider;
     }
 
-    public MemberDto(int memberseq, String email, String pwd, String profile, String nickname, int auth, String authority, String provider, String mailkey) {
+    public MemberDto(int memberseq, String email, String pwd, String profileimg, String nickname, int auth, String authority, String provider, String mailkey) {
         this.memberseq = memberseq;
         this.email = email;
         this.pwd = pwd;
-        this.profile = profile;
+        this.profileimg = profileimg;
         this.nickname = nickname;
         this.auth = auth;
         this.authority = authority;
@@ -63,12 +63,12 @@ public class MemberDto {
         this.pwd = pwd;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getProfileimg() {
+        return profileimg;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setProfile(String profileimg) {
+        this.profileimg = profileimg;
     }
 
     public String getNickname() {
@@ -117,7 +117,7 @@ public class MemberDto {
                 "memberseq=" + memberseq +
                 ", email='" + email + '\'' +
                 ", pwd='" + pwd + '\'' +
-                ", profile='" + profile + '\'' +
+                ", profileimg='" + profileimg + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", auth=" + auth +
                 ", authority='" + authority + '\'' +
