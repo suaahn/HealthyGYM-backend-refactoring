@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -15,7 +16,7 @@ public class HomeService {
     @Autowired
     HomeDao dao;
 
-    public List<BbsDto> getHomeBestPosts() {
+    public List<Map<String, Object>> getHomeBestPosts() {
         return dao.getHomeBestPosts();
     }
 

@@ -15,13 +15,8 @@
             <if test="search != null and search != ''">
                 and (title like concat('%',#{search},'%') or content like concat('%',#{search},'%'))
             </if>
-            <if test="bbstag != null">
-                <if test="bbstag == 0">
-                    and 1=1 <!-- 모든 게시글 -->
-                </if>
-                <if test="bbstag != 0">
-                    and bbstag = #{bbstag} <!-- bbstag에 맞는 게시글 -->
-                </if>
+            <if test="bbstag != null and bbstag != 0">
+                and bbstag=#{bbstag}
             </if>
             order by ${order} desc) b
         LEFT OUTER JOIN (select count(*) cnt, bbsseq
@@ -29,9 +24,42 @@
             group by bbsseq) c
         on b.bbsseq=c.bbsseq
         where a.memberseq=b.memberseq
-        <if test="bbstag != null and bbstag != 0">
-            and bbstag=#{bbstag}
-        </if>
+            and rnum between ${start} and ${end}
+    </select>
+
+    <!--  정확도순  -->
+    <select id="findPostOrderByAccuracy" parameterType="com.healthy.gym.dto.BbsParam" resultType="map">
+        select b.bbsseq, title, content, wdate, rdate, likecount, readcount, thumbnail, bbstag,
+            profile, nickname, ifnull(cnt, 0) cmtcount
+        from member a,
+            (select row_number() over(order by
+                case when title = #{search} then 0
+                when title like concat(#{search},'%') then 1
+                when title like concat('%',#{search},'%') then 2
+                when content like concat('%',#{search},'%') then 3
+                else 4
+                end
+                ) rnum,
+            memberseq, bbsseq, bbstag, title, content, wdate, rdate, likecount, readcount, thumbnail
+            from bbs
+            where 1=1 and del=0
+            <if test="search != ''">
+                and (title like concat('%',#{search},'%') or content like concat('%',#{search},'%'))
+            </if>
+            <if test="bbstag != null and bbstag != 0">
+                and bbstag=#{bbstag}
+            </if>
+            order by case when title = #{search} then 0
+                when title like concat(#{search},'%') then 1
+                when title like concat('%',#{search},'%') then 2
+                when content like concat('%',#{search},'%') then 3
+                else 4
+                end) b
+        LEFT OUTER JOIN (select count(*) cnt, bbsseq
+            from bbs_comment
+            group by bbsseq) c
+        on b.bbsseq=c.bbsseq
+        where a.memberseq=b.memberseq
             and rnum between ${start} and ${end}
     </select>
 </mapper>

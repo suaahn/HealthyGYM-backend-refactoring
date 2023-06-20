@@ -4,10 +4,10 @@ import com.healthy.gym.dto.PageParam;
 
 public class Utility {
 
-    public static PageParam setPageParam(PageParam param) {
+    public static PageParam setPageParam(PageParam param, int limitPerPage) {
         int page = param.getPage();
-        param.setStart(1 + (page * 10));
-        param.setEnd((page + 1) * 10);
+        param.setStart(1 + (page * limitPerPage));
+        param.setEnd((page + 1) * limitPerPage);
         return param;
     }
 }

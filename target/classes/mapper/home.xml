@@ -4,8 +4,8 @@
 
 <mapper namespace="com.healthy.gym.dao.HomeDao">
 
-    <select id="getHomeBestPosts" resultType="com.healthy.gym.dto.BbsDto">
-        select bbsseq, bbstag, title, likecount, readcount
+    <select id="getHomeBestPosts" resultType="map">
+        select a.bbsseq, bbstag, title, likecount, readcount, ifnull(cnt, 0) cmtcount
         from (select row_number()over(order by readcount desc) rnum,
             bbsseq, bbstag, title, likecount, readcount
             from bbs
@@ -14,6 +14,10 @@
                 and likecount>=1
                 and del=0
             order by readcount desc) a
+        LEFT OUTER JOIN (select count(*) as cnt, bbsseq
+            from bbs_comment
+            group by bbsseq) b
+        on a.bbsseq=b.bbsseq
         where rnum between 1 and 10
     </select>
 

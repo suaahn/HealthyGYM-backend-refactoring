@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/home")
@@ -18,8 +19,8 @@ public class HomeController {
     HomeService service;
 
     @GetMapping("/best")
-    public List<BbsDto> getHomeBestPosts() {
-
+    public List<Map<String, Object>> getHomeBestPosts() {
+        System.out.println(service.getHomeBestPosts().toString());
         return service.getHomeBestPosts();
     }
 
