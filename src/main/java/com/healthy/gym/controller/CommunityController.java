@@ -7,10 +7,7 @@ import com.healthy.gym.dto.BbsParam;
 import com.healthy.gym.service.CommunityService;
 import com.healthy.gym.utils.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +22,7 @@ public class CommunityController {
     @GetMapping("/best")
     public List<Map<String, Object>> getBestPostList(BbsParam param) {
 
-        BbsParam params = (BbsParam) Utility.setPageParam(param);
+        BbsParam params = (BbsParam) Utility.setPageParam(param, 10);
 
         return service.getBestPostList(params);
     }
@@ -33,12 +30,12 @@ public class CommunityController {
     @GetMapping("/{bbstag}")
     public List<Map<String, Object>> getPostList(BbsParam param) {
 
-        BbsParam params = (BbsParam) Utility.setPageParam(param);
+        BbsParam params = (BbsParam) Utility.setPageParam(param, 10);
 
         return service.getPostList(params);
     }
 
-    @GetMapping("/{bbstag}/posts/{bbsseq}")
+    @GetMapping("/posts/{bbsseq}")
     public List<Map<String, Object>> getPost(BbsDto dto, boolean visit) {
 
         // 게시글 상세 정보
@@ -57,16 +54,16 @@ public class CommunityController {
         return detail;
     }
 
-    @GetMapping("/{bbstag}/posts/{bbsseq}/comments")
+    @GetMapping("/posts/{bbsseq}/comments")
     public List<Map<String, Object>> getPostComment(BbsCommentParam param) {
 
-        BbsCommentParam params = (BbsCommentParam)Utility.setPageParam(param);
+        BbsCommentParam params = (BbsCommentParam)Utility.setPageParam(param, 10);
 
         return service.getPostComment(params);
     }
 
     @PostMapping("/write")
-    public String writePost(BbsDto dto) {
+    public String writePost(@RequestBody BbsDto dto) {
         System.out.println(dto.toString());
 
         if(service.writePost(dto)) {
@@ -77,7 +74,7 @@ public class CommunityController {
     }
 
     @PostMapping("/write-comment")
-    public String writePostComment(BbsCommentDto dto) {
+    public String writePostComment(@RequestBody BbsCommentDto dto) {
 
         if(service.writePostComment(dto)) {
             return "OK";
@@ -87,7 +84,7 @@ public class CommunityController {
     }
 
     @PostMapping("/write-reply")
-    public String writebbsreply(BbsCommentDto dto) {
+    public String writebbsreply(@RequestBody BbsCommentDto dto) {
 
         if(service.writePostReply(dto)) {
             return "OK";
@@ -137,7 +134,7 @@ public class CommunityController {
     }
 
     @PostMapping("/update")
-    public String updatePost(BbsDto dto) {
+    public String updatePost(@RequestBody BbsDto dto) {
 
         if(service.updatePost(dto)) {
             return "OK";
@@ -147,7 +144,7 @@ public class CommunityController {
     }
 
     @PostMapping("/update-comment")
-    public String updatePostComment(BbsCommentDto dto) {
+    public String updatePostComment(@RequestBody BbsCommentDto dto) {
 
         if(service.updatePostComment(dto)) {
             return "OK";

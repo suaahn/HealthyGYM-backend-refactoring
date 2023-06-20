@@ -19,7 +19,7 @@ public class HealthMateController {
     @Autowired
     HealthMateService service;
 
-    @GetMapping
+    @GetMapping("/posts")
     public List<Map<String, Object>> getHealthMateList(HealthMateParam param, boolean[] bodypart) {
 
         String[] body = {"back", "chest", "shoulder", "arm", "abs", "leg", "run"};
@@ -30,7 +30,7 @@ public class HealthMateController {
         }
         param.setBodypart(list.toArray(new String[0]));
 
-        HealthMateParam params = (HealthMateParam) Utility.setPageParam(param);
+        HealthMateParam params = (HealthMateParam) Utility.setPageParam(param, 10);
 
         return service.getHealthMateList(params);
     }
@@ -45,7 +45,9 @@ public class HealthMateController {
     }
 
     @PostMapping("/write")
-    public boolean writeHealthMatePost(BbsDto bbsdto, HealthMateDto dto, boolean[] bodypart) {
+    public boolean writeHealthMatePost(@RequestBody BbsDto bbsdto,
+                                       @RequestBody HealthMateDto dto,
+                                       @RequestBody boolean[] bodypart) {
 
         HealthMateDto matedto = new HealthMateDto(0, dto.getAddressfirst(), dto.getAddresssecond(),
                                                     dto.getCenter(), dto.getMdate(), dto.getMtime(),

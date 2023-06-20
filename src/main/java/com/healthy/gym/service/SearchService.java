@@ -19,4 +19,8 @@ public class SearchService {
     public List<Map<String, Object>> findPostByKeyword(BbsParam param) {
         return dao.findPostByKeyword(param);
     }
+
+    public List<Map<String, Object>> findPostOrderByAccuracy(BbsParam param) {
+        return dao.findPostOrderByAccuracy(param);
+    }
 }

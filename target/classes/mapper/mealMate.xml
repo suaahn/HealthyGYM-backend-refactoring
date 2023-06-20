@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.healthy.gym.dao.MealMateDao">
+    <select id="getFoodList" parameterType="Integer" resultType="com.healthy.gym.dto.FoodDto">
+        SELECT *
+        FROM meal_ingredients
+        WHERE bbsseq = #{bbsseq}
+    </select>
+
+    <insert id="writeMealMate" parameterType="java.util.List">
+        insert into meal_ingredients(bbsseq, DESCKOR, SERVINGWT, NUTRCONT1, NUTRCONT2, NUTRCONT3,
+            NUTRCONT4, NUTRCONT5, NUTRCONT6, NUTRCONT7, NUTRCONT8, NUTRCONT9, BGNYEAR, ANIMALPLANT)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{bbsseq}, #{desckor}, #{servingwt}, #{nutrcont1}, #{nutrcont2}, #{nutrcont3}, #{nutrcont4},
+            #{nutrcont5}, #{nutrcont6}, #{nutrcont7}, #{nutrcont8}, #{nutrcont9}, #{bgnyear}, #{animalplant})
+        </foreach>
+    </insert>
+
+    <insert id="writePost" parameterType="com.healthy.gym.dto.BbsDto"
+            useGeneratedKeys="true" keyProperty="bbsseq" keyColumn="bbsseq">
+        insert into bbs(memberseq, title, content, bbstag)
+        values(#{memberseq}, #{title}, #{content}, #{bbstag})
+    </insert>
+</mapper>

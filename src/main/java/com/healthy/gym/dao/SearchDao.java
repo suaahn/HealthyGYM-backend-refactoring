@@ -12,4 +12,5 @@ import java.util.Map;
 public interface SearchDao {
 
     List<Map<String, Object>> findPostByKeyword(BbsParam param);
+    List<Map<String, Object>> findPostOrderByAccuracy(BbsParam param);
 }

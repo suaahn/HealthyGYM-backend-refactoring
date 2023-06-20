@@ -20,10 +20,14 @@ public class SearchController {
     @GetMapping("/search")
     public List<Map<String, Object>> findPostByKeyword(BbsParam param){
 
-        BbsParam params = (BbsParam) Utility.setPageParam(param);
+        BbsParam params = (BbsParam) Utility.setPageParam(param, 10);
 
         if(params.getSearch() == null || params.getSearch().equals("")) {
             params.setSearch("");
+        }
+
+        if(params.getOrder().equals("accuracy")) {
+            return service.findPostOrderByAccuracy(params);
         }
 
         return service.findPostByKeyword(params);
